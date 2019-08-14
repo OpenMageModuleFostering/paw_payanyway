@@ -21,7 +21,7 @@ class Paw_Payanyway_Model_Event
      * @var array
      */
     protected $_eventData = array();
-	
+
     /**
      * Event response code
      * @var int

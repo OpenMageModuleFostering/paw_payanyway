@@ -3,7 +3,7 @@
 <config>
     <modules>
         <Paw_Payanyway>
-            <version>1.0.0</version>
+            <version>1.4.0</version>
         </Paw_Payanyway>
     </modules>
     <global>

@@ -129,6 +129,8 @@ class Paw_Payanyway_ProcessingController extends Mage_Core_Controller_Front_Acti
      *
      * @param string $path
      * @param array $arguments
+     *
+     * @return Paw_Payanyway_ProcessingController
      */
     protected function _redirect($path, $arguments=array())
     {

@@ -21,8 +21,9 @@ class Paw_Payanyway_Block_Invoice extends Mage_Core_Block_Template
 		$login = $methodInstance->getConfigParam('payanyway_login');
 		$password = $methodInstance->getConfigParam('payanyway_password');
 		$payment_method = $methodInstance->getCode();
-		
-        switch ($methodInstance->getConfigParam('payment_action'))
+		$payment_server = $methodInstance->getConfigParam('payment_action');
+
+        switch ($payment_server)
         {
             case "demo.moneta.ru":
                 $service = new MonetaWebService("https://demo.moneta.ru/services.wsdl", $login, $password);
@@ -34,7 +35,22 @@ class Paw_Payanyway_Block_Invoice extends Mage_Core_Block_Template
 
         try
         {
-            // получить данные счета
+	        $totalAmount = $params['MNT_AMOUNT']." ".$params['MNT_CURRENCY_CODE'];
+	        $fee = "-";
+
+	        // запрос стоимости и комиссии
+	        if (isset($params['paymentSystem_accountId'])) {
+		        $transactionRequestType = new MonetaForecastTransactionRequest();
+		        $transactionRequestType->payer = $params['paymentSystem_accountId'];
+		        $transactionRequestType->payee = $params['MNT_ID'];
+		        $transactionRequestType->amount = $params['MNT_AMOUNT'];
+		        $transactionRequestType->clientTransaction = $params['MNT_TRANSACTION_ID'];
+		        $forecast = $service->ForecastTransaction($transactionRequestType);
+		        $totalAmount = number_format($forecast->payerAmount,2,'.','')." ".$forecast->payerCurrency;
+		        $fee = number_format($forecast->payerFee,2,'.','')." ".$forecast->payerCurrency;
+	        }
+
+	        // получить данные счета
             $request = new MonetaInvoiceRequest();
 			
 			if (isset($params['paymentSystem_accountId']))
@@ -58,9 +74,9 @@ class Paw_Payanyway_Block_Invoice extends Mage_Core_Block_Template
 				$a3->value = $params['additionalParameters_mailofrussiaSenderAddress'];
 				$operationInfo->addAttribute($a3);
 				$a4 = new MonetaKeyValueAttribute();
-				$a5->key = 'mailofrussianame';
-				$a5->value = $params['additionalParameters_mailofrussiaSenderName'];
-				$operationInfo->addAttribute($a5);
+				$a4->key = 'mailofrussianame';
+				$a4->value = $params['additionalParameters_mailofrussiaSenderName'];
+				$operationInfo->addAttribute($a4);
 				$request->operationInfo = $operationInfo;
 			}
 			elseif ($payment_method == 'payanyway_euroset')
@@ -92,9 +108,13 @@ class Paw_Payanyway_Block_Invoice extends Mage_Core_Block_Template
 			
 			$invoice = array( 'status' => $response->status,
 							  'system' => $payment_method,
+							  'ctid' => $params['MNT_TRANSACTION_ID'],
 							  'transaction' => str_pad($transaction_id, 10, "0", STR_PAD_LEFT),
-							  'amount' => $params['MNT_AMOUNT']." ".$params['MNT_CURRENCY_CODE'],
-							  'unitid' => $params['paymentSystem_unitId']);
+							  'operation' => $response->transaction,
+							  'amount' => $totalAmount,
+							  'fee' => $fee,
+							  'unitid' => $params['paymentSystem_unitId'],
+							  'payment_server' => $payment_server);
         }
         catch (Exception $e)
         {
