@@ -100,11 +100,11 @@ abstract class Paw_Payanyway_Model_Abstract extends Mage_Payment_Model_Method_Ab
     {
 		if (!$this->_isInvoice)
 		{
-			 return "https://".$this->getConfigParam('payment_action')."/assistant.htm"; 
+			return "https://".$this->getConfigParam('payment_action')."/assistant.htm";
 		}
 		else
 		{
-			return Mage::getUrl('payanyway/processing/invoice');;
+			return Mage::getUrl('payanyway/processing/invoice');
 		}
     }
 	
@@ -128,6 +128,13 @@ abstract class Paw_Payanyway_Model_Abstract extends Mage_Payment_Model_Method_Ab
 		
 	}
 
+    private static function cleanProductName($value)
+    {
+        $result = preg_replace('/[^0-9a-zA-Zа-яА-Я ]/ui', '', htmlspecialchars_decode($value));
+        $result = trim(mb_substr($result, 0, 20));
+        return $result;
+    }
+
     /**
      * prepare params array to send it to gateway page via POST
      *
@@ -135,26 +142,86 @@ abstract class Paw_Payanyway_Model_Abstract extends Mage_Payment_Model_Method_Ab
      */
     public function getFormFields()
     {
+        $params = array();
+
         $order_id = $this->getOrder()->getRealOrderId();
 		
 		$mntId = $this->getConfigParam('mnt_id');
 		$mntDataintegrityCode = $this->getConfigParam('mnt_dataintegrity_code');
 		$amount = number_format($this->getOrder()->getGrandTotal(), 2, '.', '');
-		$currencyCode = $this->getOrder()->getOrderCurrencyCode();
+        $orderItems = $this->getOrder()->getAllItems();
+
+        if ($this->getConfigParam('mnt_kassa') == '1')
+        {
+            $inventory = [];
+            /** @var Mage_Sales_Model_Order_Item $orderItem */
+            foreach ($orderItems as $orderItem)
+                $inventory[] = [
+                    'n' => self::cleanProductName($orderItem->getName()),
+                    'p' => number_format($orderItem->getProduct()->getFinalPrice(), 2, '.', ''),
+                    'q' => $orderItem->getQtyToInvoice(),
+                    't' => '1105'
+                ];
+
+            $shippingAmount = $this->getOrder()->getShippingAmount();
+            if ($shippingAmount > 0)
+                $inventory[] = [
+                    'n' => 'Доставка',
+                    'p' => number_format($shippingAmount, 2, '.', ''),
+                    'q' => '1',
+                    't' => '1105'
+                ];
+
+            $productsTotal = 0;
+            foreach ($inventory AS $item)
+                $productsTotal = $productsTotal + floatval($item['p']) * floatval($item['q']);
+
+            if (floatval($productsTotal) != floatval($amount))
+            {
+                $discountRate = floatval($amount) / floatval($productsTotal);
+                $newInventory = [];
+                $newInventoryTotal = 0;
+                foreach ($inventory AS $item)
+                {
+                    $item['p'] = number_format(floor(floatval($item['p']) * $discountRate * 100) * 0.01, 2, '.', '');
+                    $newInventory[] = $item;
+                    $newInventoryTotal = $newInventoryTotal + floatval($item['p']) * floatval($item['q']);
+                }
+                if ($newInventoryTotal < floatval($amount))
+                    $newInventory[] = [
+                        'n' => 'Корректировка',
+                        'p' => number_format($amount - $newInventoryTotal, 2, '.', ''),
+                        'q' => '1',
+                        't' => '1105'
+                    ];
+                $inventory = $newInventory;
+            }
+
+            $kassaData = ['customer' => $this->getOrder()->getCustomerEmail(), 'items' => $inventory];
+
+            $jsonData = preg_replace_callback('/\\\\u(\w{4})/', function ($matches)
+            {
+                return html_entity_decode('&#x' . $matches[1] . ';', ENT_COMPAT, 'UTF-8');
+            }, json_encode($kassaData));
+            $jsonData = str_replace('"', "'", $jsonData);
+            $params['MNT_CUSTOM1'] = '1';
+            $params['MNT_CUSTOM2'] = $jsonData;
+        }
+
+        $currencyCode = $this->getOrder()->getOrderCurrencyCode();
 		$mntTestMode = $this->getConfigParam('mnt_test_mode');
 		$mntSignature = md5($mntId.$order_id.$amount.$currencyCode.$mntTestMode.$mntDataintegrityCode);
 		$unitId = $this->getMethodParam('unitid');
 
-        $params = array(
-			'MNT_ID'					=> $mntId,
-			'MNT_TRANSACTION_ID'		=> $order_id,
-			'MNT_AMOUNT'				=> $amount,
-			'MNT_CURRENCY_CODE'			=> $currencyCode,
-			'MNT_TEST_MODE'				=> $mntTestMode,
-			'MNT_SIGNATURE'				=> $mntSignature,
-			'MNT_SUCCESS_URL'			=> Mage::getUrl('payanyway/processing/success'),
-			'MNT_FAIL_URL'				=> Mage::getUrl('payanyway/processing/cancel')
-        );
+        $params['MNT_ID']				= $mntId;
+        $params['MNT_TRANSACTION_ID']	= $order_id;
+        $params['MNT_AMOUNT']			= $amount;
+        $params['MNT_CURRENCY_CODE']	= $currencyCode;
+        $params['MNT_TEST_MODE']		= $mntTestMode;
+        $params['MNT_SIGNATURE']		= $mntSignature;
+        $params['MNT_SUCCESS_URL']		= Mage::getUrl('payanyway/processing/success');
+        $params['MNT_FAIL_URL']			= Mage::getUrl('payanyway/processing/cancel');
+
 		if (!empty($unitId))
 			$params['paymentSystem.unitId'] = $unitId;
 		

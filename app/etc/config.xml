@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<config>
+    <modules>
+        <Paw_Payanyway>
+            <version>1.4.3</version>
+        </Paw_Payanyway>
+    </modules>
+</config>

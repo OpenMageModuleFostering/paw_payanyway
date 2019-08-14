@@ -3,7 +3,7 @@
 <config>
     <modules>
         <Paw_Payanyway>
-            <version>1.4.0</version>
+            <version>1.4.3</version>
         </Paw_Payanyway>
     </modules>
     <global>
@@ -267,7 +267,7 @@
                 <active>0</active>
                 <model>payanyway/plastic</model>
                 <title>VISA, MasterCard</title>
-                <unitid>499669</unitid>
+                <unitid>card</unitid>
                 <logotype>visa.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_plastic>
