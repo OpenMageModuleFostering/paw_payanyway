@@ -257,6 +257,15 @@
 				<logotype>post.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_post>
+            <payanyway_sberbank>
+                <group>paway</group>
+                <active>0</active>
+                <model>payanyway/sberbank</model>
+                <title>Sberbank</title>
+				<unitid>510801</unitid>
+				<logotype>sberbank.jpg</logotype>
+                <allowspecific>0</allowspecific>
+            </payanyway_sberbank>
             <payanyway_walletone>
                 <group>paway</group>
                 <active>0</active>
@@ -298,7 +307,7 @@
                 <active>0</active>
                 <model>payanyway/dengimail</model>
                 <title>Money@Mail.Ru</title>
-				<unitid>587412</unitid>
+				<unitid>545234</unitid>
 				<logotype>dengimail.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_dengimail>
@@ -325,7 +334,7 @@
                 <active>0</active>
                 <model>payanyway/psb</model>
                 <title>Internet-bank "Promsvyazbank"</title>
-				<unitid>609111</unitid>
+				<unitid>661709</unitid>
 				<logotype>psb.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_psb>

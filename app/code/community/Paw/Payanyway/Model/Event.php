@@ -21,6 +21,12 @@ class Paw_Payanyway_Model_Event
      * @var array
      */
     protected $_eventData = array();
+	
+    /**
+     * Event response code
+     * @var int
+     */
+	protected $_responseCode = 500;
 
     /**
      * Enent request data setter
@@ -86,13 +92,15 @@ class Paw_Payanyway_Model_Event
 	public function callbackEvent()
 	{
         $this->_validateEventData(true);
-		$this->_processSale(self::PAYANYWAY_STATUS_SUCCESS, Mage::helper('payanyway')->__('Payment has been completed.'));
-		die('SUCCESS');
+		
+		header("Content-type: application/xml");
+		echo $this->_getXMLResponse($this->_responseCode);
+		exit;
 	}
 	
 	public function invoiceEvent()
 	{
-        $params = $this->_validateEventData(false);
+        $this->_validateEventData(false);
 		return '';
 	}
 
@@ -167,35 +175,90 @@ class Paw_Payanyway_Model_Event
         ) {
             Mage::throwException('Missing or invalid order ID.');
         }
+		
         // load order for further validation
         $this->_order = Mage::getModel('sales/order')->loadByIncrementId($params['MNT_TRANSACTION_ID']);
-        if (!$this->_order->getId()) {
-            Mage::throwException('Order not found.');
-        }
+		
+		if ($fullCheck == false) {
+			if (!$this->_order->getId()) {
+				Mage::throwException('Order not found.');
+			}
 
-        if (0 !== strpos($this->_order->getPayment()->getMethodInstance()->getCode(), 'payanyway_')) {
-            Mage::throwException('Unknown payment method.');
-        }
+			if (0 !== strpos($this->_order->getPayment()->getMethodInstance()->getCode(), 'payanyway_')) {
+				Mage::throwException('Unknown payment method.');
+			}
+		}
 
         // make additional validation
-        if ($fullCheck) {
-			
-			if(isset($params['MNT_ID']) && isset($params['MNT_TRANSACTION_ID']) && isset($params['MNT_OPERATION_ID'])
-			   && isset($params['MNT_AMOUNT']) && isset($params['MNT_CURRENCY_CODE']) && isset($params['MNT_TEST_MODE'])
-			   && isset($params['MNT_SIGNATURE']))
+        if ($fullCheck && $this->_order->getId())
+		{
+			if(isset($params['MNT_ID']) && isset($params['MNT_TRANSACTION_ID']) && isset($params['MNT_AMOUNT']) && isset($params['MNT_CURRENCY_CODE']) && isset($params['MNT_TEST_MODE']) && isset($params['MNT_SIGNATURE']))
 			{
-				$mntDataintegrityCode = $this->_order->getPayment()->getMethodInstance()->getDataintegrityCode();
-				$mntSignature = md5("{$params['MNT_ID']}{$params['MNT_TRANSACTION_ID']}{$params['MNT_OPERATION_ID']}{$params['MNT_AMOUNT']}{$params['MNT_CURRENCY_CODE']}{$params['MNT_TEST_MODE']}".$mntDataintegrityCode);
-				if ($mntSignature !== $params['MNT_SIGNATURE'])
+				if ($this->_checkSignature())
 				{
-					die('FAIL');
+					$amount = (float) $params['MNT_AMOUNT'];
+					if ( !isset($params['MNT_COMMAND']) && ($this->_order->getGrandTotal() == $amount) )
+					{
+						$this->_processSale(self::PAYANYWAY_STATUS_SUCCESS, Mage::helper('payanyway')->__('Payment has been completed.'));
+						$this->_responseCode = 200;
+					}
+					else
+					{
+						$status = $this->_order->getStatus();
+						switch($params['MNT_COMMAND']) {
+							case "CHECK":
+								if ($status == Mage_Sales_Model_Order::STATE_PROCESSING || $status == Mage_Sales_Model_Order::STATE_PENDING_PAYMENT)
+									$this->_responseCode = 402;
+								break;
+							case "CANCELLED_CREDIT":
+								/*отмена зачисления*/
+								$this->_processCancel( Mage::helper('payanyway')->__('Canceled by payment system.') );
+								$this->_responseCode = 200;
+								break;
+							default:
+								$this->_responseCode = 200;
+								break;
+						}
+					}
 				}
 			}
-			else
-			{
-				die('FAIL');
-			}
         }
-        return $params;
     }
+	
+	private function _checkSignature()
+	{
+		$eventData = $this->_eventData;
+		$params = '';
+		
+		if (isset($eventData['MNT_COMMAND'])) $params .= $eventData['MNT_COMMAND'];
+		$params .= $eventData['MNT_ID'] . $eventData['MNT_TRANSACTION_ID'];
+		if (isset($eventData['MNT_OPERATION_ID'])) $params .= $eventData['MNT_OPERATION_ID'];
+		if (isset($eventData['MNT_AMOUNT'])) $params .= $eventData['MNT_AMOUNT'];
+		$params .= $eventData['MNT_CURRENCY_CODE'];
+		if (isset($eventData['MNT_SUBSCRIBER_ID'])) $params .= $eventData['MNT_SUBSCRIBER_ID'];
+		$params .= $eventData['MNT_TEST_MODE'];
+
+		$signature = md5($params . $this->_order->getPayment()->getMethodInstance()->getDataintegrityCode());
+
+		if(strcasecmp($signature, $eventData['MNT_SIGNATURE'] ) == 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	private function _getXMLResponse($resultCode)
+	{
+		$params = $this->_eventData;
+		$signature = md5($resultCode . $params['MNT_ID'] . $params['MNT_TRANSACTION_ID'] . $this->_order->getPayment()->getMethodInstance()->getDataintegrityCode());
+		$result = '<?xml version="1.0" encoding="UTF-8" ?>';
+		$result .= '<MNT_RESPONSE>';
+		$result .= '<MNT_ID>' . $params['MNT_ID'] . '</MNT_ID>';
+		$result .= '<MNT_TRANSACTION_ID>' . $params['MNT_TRANSACTION_ID'] . '</MNT_TRANSACTION_ID>';
+		$result .= '<MNT_RESULT_CODE>' . $resultCode . '</MNT_RESULT_CODE>';
+		$result .= '<MNT_SIGNATURE>' . $signature . '</MNT_SIGNATURE>';
+		$result .= '</MNT_RESPONSE>';
+		return $result;
+	}
+	
 }

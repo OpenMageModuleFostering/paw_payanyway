@@ -41,6 +41,12 @@
 			</div>
 		</li>
 		<li>
+			<label class="required" for="senderRegion"><em>*</em><?php echo Mage::helper('payanyway')->__('Sender region') ?></label>
+			<div class="input-box">
+				<input type="text" value="" class="input-text required-entry" title="Sender region" name="payment[additional_information][additionalParameters.mailofrussiaSenderRegion]" id="senderRegion" autocomplete="off">
+			</div>
+		</li>
+		<li>
 			<label class="required" for="senderAddress"><em>*</em><?php echo Mage::helper('payanyway')->__('Sender address') ?></label>
 			<div class="input-box">
 				<input type="text" value="" class="input-text required-entry" title="Sender address" name="payment[additional_information][additionalParameters.mailofrussiaSenderAddress]" id="senderAddress" autocomplete="off">

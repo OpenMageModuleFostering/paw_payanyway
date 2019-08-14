@@ -1,26 +1,17 @@
-<div class="page-head">
-    <h3><?php echo Mage::helper('payanyway')->__('Redirecting to payment system') ?></h3>
+<div class="page-title">
+    <h1><?php echo $this->__('Redirecting...') ?></h1>
 </div>
-<table style="width:100%;">
-    <tr>
-        <td style="width:75%">
-			<form name="payanyway" id="payanyway_payment_form" action="<?php echo $this->getFormAction();?>" method="POST">
-			<?php if (is_array($this->getFormData())): ?>
-				<?php foreach ($this->getFormData() as $name => $value): ?>
-					<input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>"/>
-				<?php endforeach; ?>
-			<?php endif; ?>
-			</form>
-			
-			<script type="text/javascript">
-			//<![CDATA[
-				var paymentform = document.getElementById('payanyway_payment_form');
-				window.onload = paymentform.submit();
-			//]]>
-			</script>            
-        </td>
-        <td style="text-align:center;">
-            <img src="<?php echo $this->getPayanywayLogoSrc() ?>" title="<?php echo Mage::helper('payanyway')->__('Powered by Payanyway') ?>" alt="<?php echo Mage::helper('payanyway')->__('Powered by Payanyway') ?>" />
-        </td>
-    </tr>
-</table>
+<div>
+	<form name="payanyway" id="payanyway_payment_form" action="<?php echo $this->getFormAction();?>" method="POST">
+	<?php if (is_array($this->getFormData())): ?>
+		<?php foreach ($this->getFormData() as $name => $value): ?>
+			<input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>"/>
+		<?php endforeach; ?>
+	<?php endif; ?>
+	</form>
+</div>			
+<script type="text/javascript">
+//<![CDATA[
+	document.getElementById('payanyway_payment_form').submit();
+//]]>
+</script>            

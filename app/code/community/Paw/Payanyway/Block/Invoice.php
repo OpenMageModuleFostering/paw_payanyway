@@ -6,7 +6,7 @@ class Paw_Payanyway_Block_Invoice extends Mage_Core_Block_Template
 	public function getPaymentAction()
 	{
         $storeId = Mage::app()->getStore()->getId();
-         return Mage::getStoreConfig('payanyway/settings/payment_action', $storeId);
+        return Mage::getStoreConfig('payanyway/settings/payment_action', $storeId);
 	}
 
 	public function getInvoice()
@@ -37,6 +37,8 @@ class Paw_Payanyway_Block_Invoice extends Mage_Core_Block_Template
             // получить данные счета
             $request = new MonetaInvoiceRequest();
 			
+			if (isset($params['paymentSystem_accountId']))
+				$request->payer = $params['paymentSystem_accountId'];
             $request->payee = $params['MNT_ID'];
             $request->amount = $params['MNT_AMOUNT'];
             $request->clientTransaction = $params['MNT_TRANSACTION_ID'];
@@ -48,13 +50,17 @@ class Paw_Payanyway_Block_Invoice extends Mage_Core_Block_Template
 				$a1->value = $params['additionalParameters_mailofrussiaSenderIndex'];
 				$operationInfo->addAttribute($a1);
 				$a2 = new MonetaKeyValueAttribute();
-				$a2->key = 'mailofrussiaaddress';
-				$a2->value = $params['additionalParameters_mailofrussiaSenderAddress'];
+				$a2->key = 'mailofrussiaregion';
+				$a2->value = $params['additionalParameters_mailofrussiaSenderRegion'];
 				$operationInfo->addAttribute($a2);
 				$a3 = new MonetaKeyValueAttribute();
-				$a3->key = 'mailofrussianame';
-				$a3->value = $params['additionalParameters_mailofrussiaSenderName'];
+				$a3->key = 'mailofrussiaaddress';
+				$a3->value = $params['additionalParameters_mailofrussiaSenderAddress'];
 				$operationInfo->addAttribute($a3);
+				$a4 = new MonetaKeyValueAttribute();
+				$a5->key = 'mailofrussianame';
+				$a5->value = $params['additionalParameters_mailofrussiaSenderName'];
+				$operationInfo->addAttribute($a5);
 				$request->operationInfo = $operationInfo;
 			}
 			elseif ($payment_method == 'payanyway_euroset')
@@ -94,6 +100,12 @@ class Paw_Payanyway_Block_Invoice extends Mage_Core_Block_Template
         {
 			$invoice = array( 'status' => 'FAILED',
 							  'error_message' => $e->getMessage());
+			
+			if($order->canCancel()) {
+				$order->cancel();
+				$order->addStatusToHistory(Mage_Sales_Model_Order::STATE_CANCELED, $e->getMessage());
+				$order->save();
+			}				
         }
 		
         return $invoice;

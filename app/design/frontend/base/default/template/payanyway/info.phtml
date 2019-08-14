@@ -5,7 +5,11 @@
 	</div>
 <?php endif; ?>
 <?php if ($this->getInfo()->getLastTransId() == ''): ?>
-    <em><?php echo Mage::helper('payanyway')->__('You will be redirected to the payment system page when you place an order.') ?></em>
+	<? if($this->getInfo()->getMethodInstance()->isInvoice()): ?>
+		<em><?php echo Mage::helper('payanyway')->__('Invoice will be created after you place an order.') ?></em>
+	<? else: ?>
+		<em><?php echo Mage::helper('payanyway')->__('You will be redirected to the payment system page when you place an order.') ?></em>
+	<? endif;?>
 <?php else: ?>
     <?php echo Mage::helper('payanyway')->__('Payanyway Transaction ID: %s', $this->htmlEscape($this->getInfo()->getLastTransId())) ?><br />
 <?php endif; ?>

@@ -80,6 +80,16 @@ abstract class Paw_Payanyway_Model_Abstract extends Mage_Payment_Model_Method_Ab
     }
 
     /**
+     * Check if method is offline one
+     *
+     * @return boolean
+     */
+	public function isInvoice()
+	{
+		return $this->_isInvoice;
+	}
+	
+    /**
      * Return url of payment method
      *
      * @return string
@@ -146,6 +156,9 @@ abstract class Paw_Payanyway_Model_Abstract extends Mage_Payment_Model_Method_Ab
 		if (!empty($unitId))
 			$params['paymentSystem.unitId'] = $unitId;
 		
+		if (isset($this->_accountId))
+			$params['paymentSystem.accountId'] = $this->_accountId;
+		
 		if ($this->_code !== 'payanyway') {
 			$params['followup'] = 'true';
 			$params['javascriptEnabled'] = 'true';
@@ -185,4 +198,5 @@ abstract class Paw_Payanyway_Model_Abstract extends Mage_Payment_Model_Method_Ab
         $paymentAction = $this->getConfigData('payment_action');
         return empty($paymentAction) ? true : $paymentAction;
     }
+	
 }

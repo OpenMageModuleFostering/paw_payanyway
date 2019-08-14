@@ -100,8 +100,27 @@ class Paw_Payanyway_ProcessingController extends Mage_Core_Controller_Front_Acti
             ->setEventData($this->getRequest()->getParams());
 		$event->invoiceEvent();
 
-       $this->loadLayout();
-       $this->renderLayout();
+		$this->loadLayout();
+		
+		$block = $this->getLayout()->getBlock('payanyway_invoice');
+		$invoice = $block->getInvoice();
+		
+		if ($invoice['status'] === 'FAILED') {
+			// set quote to active
+			$session = $this->_getCheckout();
+			if ($quoteId = $session->getPayanywayQuoteId()) {
+				$quote = Mage::getModel('sales/quote')->load($quoteId);
+				if ($quote->getId()) {
+					$quote->setIsActive(true)->save();
+					$session->setQuoteId($quoteId);
+				}
+			}
+			$session->addError($invoice['error_message']);
+			$this->_redirect('checkout/cart');
+		} else {
+			$block->setData("invoice", $invoice);
+			$this->renderLayout();
+		}
 	}
 
     /**
