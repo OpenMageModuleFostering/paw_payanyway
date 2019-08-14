@@ -21,12 +21,44 @@
             <payanyway_setup>
                 <setup>
                     <module>Paw_Payanyway</module>
+                    <class>Paw_Payanyway_Model_Resource_Setup</class>
                 </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
             </payanyway_setup>
+            <payanyway_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </payanyway_write>
+            <payanyway_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </payanyway_read>
         </resources>
         <blocks>
             <payanyway><class>Paw_Payanyway_Block</class></payanyway>
         </blocks>
+        <sales>
+            <order>
+                <statuses>
+                    <pending_payanyway translate="label">
+                        <label>Pending PayanyWay payment</label>
+                    </pending_payanyway>
+                </statuses>
+                <states>
+                    <pending_payanyway translate="label">
+                        <label>Pending PayanyWay</label>
+                        <statuses>
+                            <pending_payanyway default="1"/>
+                        </statuses>
+                        <visible_on_front>1</visible_on_front>
+                    </pending_payanyway>
+                </states>
+            </order>
+        </sales>
         <payment>
             <groups>
                 <paway>Payanyway</paway>
@@ -64,7 +96,7 @@
         </layout>
     </frontend>
     <admin>
-         <routers>
+        <routers>
             <adminhtml>
                 <args>
                     <modules>
@@ -118,8 +150,8 @@
                 <active>1</active>
                 <model>payanyway/payanyway</model>
                 <title>PayAnyWay</title>
-				<unitid></unitid>
-				<logotype>payanyway.jpg</logotype>
+                <unitid></unitid>
+                <logotype>payanyway.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway>
             <payanyway_moneta>
@@ -127,8 +159,8 @@
                 <active>0</active>
                 <model>payanyway/moneta</model>
                 <title>Moneta.ru</title>
-				<unitid>1015</unitid>
-				<logotype>moneta.jpg</logotype>
+                <unitid>1015</unitid>
+                <logotype>moneta.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_moneta>
             <payanyway_banktransfer>
@@ -136,8 +168,8 @@
                 <active>0</active>
                 <model>payanyway/banktransfer</model>
                 <title>Bank transfer</title>
-				<unitid>705000</unitid>
-				<logotype>banktransfer.jpg</logotype>
+                <unitid>705000</unitid>
+                <logotype>banktransfer.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_banktransfer>
             <payanyway_ciberpay>
@@ -145,8 +177,8 @@
                 <active>0</active>
                 <model>payanyway/ciberpay</model>
                 <title>CiberPay</title>
-				<unitid>489755</unitid>
-				<logotype>ciberpay.jpg</logotype>
+                <unitid>489755</unitid>
+                <logotype>ciberpay.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_ciberpay>
             <payanyway_comepay>
@@ -154,8 +186,8 @@
                 <active>0</active>
                 <model>payanyway/comepay</model>
                 <title>ComePay</title>
-				<unitid>228820</unitid>
-				<logotype>comepay.jpg</logotype>
+                <unitid>228820</unitid>
+                <logotype>comepay.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_comepay>
             <payanyway_contact>
@@ -163,8 +195,8 @@
                 <active>0</active>
                 <model>payanyway/contact</model>
                 <title>Contact</title>
-				<unitid>1028</unitid>
-				<logotype>contact.jpg</logotype>
+                <unitid>1028</unitid>
+                <logotype>contact.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_contact>
             <payanyway_euroset>
@@ -172,26 +204,26 @@
                 <active>0</active>
                 <model>payanyway/euroset</model>
                 <title>Euroset, Svyaznoi</title>
-				<unitid>248362</unitid>
- 				<logotype>euroset.png</logotype>
-               <allowspecific>0</allowspecific>
+                <unitid>248362</unitid>
+                <logotype>euroset.png</logotype>
+                <allowspecific>0</allowspecific>
             </payanyway_euroset>
             <payanyway_elecsnet>
                 <group>paway</group>
                 <active>0</active>
                 <model>payanyway/elecsnet</model>
                 <title>Elecsnet</title>
-				<unitid>232821</unitid>
- 				<logotype>elecsnet.jpg</logotype>
-               <allowspecific>0</allowspecific>
+                <unitid>232821</unitid>
+                <logotype>elecsnet.jpg</logotype>
+                <allowspecific>0</allowspecific>
             </payanyway_elecsnet>
             <payanyway_gorod>
                 <group>paway</group>
                 <active>0</active>
                 <model>payanyway/gorod</model>
                 <title>Federal system Gorod</title>
-				<unitid>426904</unitid>
-				<logotype>gorod.jpg</logotype>
+                <unitid>426904</unitid>
+                <logotype>gorod.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_gorod>
             <payanyway_forward>
@@ -199,8 +231,8 @@
                 <active>0</active>
                 <model>payanyway/forward</model>
                 <title>Forward</title>
-				<unitid>83046</unitid>
-				<logotype>forward.jpg</logotype>
+                <unitid>83046</unitid>
+                <logotype>forward.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_forward>
             <payanyway_mcb>
@@ -208,8 +240,8 @@
                 <active>0</active>
                 <model>payanyway/mcb</model>
                 <title>MosCreditBank</title>
-				<unitid>295339</unitid>
-				<logotype>mcb.jpg</logotype>
+                <unitid>295339</unitid>
+                <logotype>mcb.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_mcb>
             <payanyway_moneymail>
@@ -217,8 +249,8 @@
                 <active>0</active>
                 <model>payanyway/moneymail</model>
                 <title>MoneyMail</title>
-				<unitid>1038</unitid>
-				<logotype>moneymail.jpg</logotype>
+                <unitid>1038</unitid>
+                <logotype>moneymail.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_moneymail>
             <payanyway_novoplat>
@@ -226,8 +258,8 @@
                 <active>0</active>
                 <model>payanyway/novoplat</model>
                 <title>Novoplat</title>
-				<unitid>281129</unitid>
-				<logotype>novoplat.jpg</logotype>
+                <unitid>281129</unitid>
+                <logotype>novoplat.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_novoplat>
             <payanyway_plastic>
@@ -235,8 +267,8 @@
                 <active>0</active>
                 <model>payanyway/plastic</model>
                 <title>VISA, MasterCard</title>
-				<unitid>499669</unitid>
-				<logotype>visa.jpg</logotype>
+                <unitid>499669</unitid>
+                <logotype>visa.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_plastic>
             <payanyway_platika>
@@ -244,8 +276,8 @@
                 <active>0</active>
                 <model>payanyway/platika</model>
                 <title>PLATiKA</title>
-				<unitid>226272</unitid>
-				<logotype>platika.jpg</logotype>
+                <unitid>226272</unitid>
+                <logotype>platika.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_platika>
             <payanyway_post>
@@ -253,8 +285,8 @@
                 <active>0</active>
                 <model>payanyway/post</model>
                 <title>Russian Post Transfer</title>
-				<unitid>1029</unitid>
-				<logotype>post.jpg</logotype>
+                <unitid>1029</unitid>
+                <logotype>post.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_post>
             <payanyway_sberbank>
@@ -262,8 +294,8 @@
                 <active>0</active>
                 <model>payanyway/sberbank</model>
                 <title>Sberbank</title>
-				<unitid>510801</unitid>
-				<logotype>sberbank.jpg</logotype>
+                <unitid>510801</unitid>
+                <logotype>sberbank.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_sberbank>
             <payanyway_walletone>
@@ -271,8 +303,8 @@
                 <active>0</active>
                 <model>payanyway/walletone</model>
                 <title>Wallet One</title>
-				<unitid>310212</unitid>
-				<logotype>walletone.jpg</logotype>
+                <unitid>310212</unitid>
+                <logotype>walletone.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_walletone>
             <payanyway_webmoney>
@@ -280,8 +312,8 @@
                 <active>0</active>
                 <model>payanyway/webmoney</model>
                 <title>WebMoney</title>
-				<unitid>1017</unitid>
-				<logotype>webmoney.jpg</logotype>
+                <unitid>1017</unitid>
+                <logotype>webmoney.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_webmoney>
             <payanyway_yandex>
@@ -289,8 +321,8 @@
                 <active>0</active>
                 <model>payanyway/yandex</model>
                 <title>Yandex.Money</title>
-				<unitid>1020</unitid>
-				<logotype>yandex.jpg</logotype>
+                <unitid>1020</unitid>
+                <logotype>yandex.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_yandex>
             <payanyway_alfaclick>
@@ -298,8 +330,8 @@
                 <active>0</active>
                 <model>payanyway/alfaclick</model>
                 <title>Internet-bank "Alfa-Click"</title>
-				<unitid>587412</unitid>
-				<logotype>alfaclick.jpg</logotype>
+                <unitid>587412</unitid>
+                <logotype>alfaclick.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_alfaclick>
             <payanyway_dengimail>
@@ -307,8 +339,8 @@
                 <active>0</active>
                 <model>payanyway/dengimail</model>
                 <title>Money@Mail.Ru</title>
-				<unitid>545234</unitid>
-				<logotype>dengimail.jpg</logotype>
+                <unitid>545234</unitid>
+                <logotype>dengimail.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_dengimail>
             <payanyway_qiwi>
@@ -316,8 +348,8 @@
                 <active>0</active>
                 <model>payanyway/qiwi</model>
                 <title>QIWI wallet</title>
-				<unitid>822360</unitid>
-				<logotype>qiwi.jpg</logotype>
+                <unitid>822360</unitid>
+                <logotype>qiwi.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_qiwi>
             <payanyway_faktura>
@@ -325,8 +357,8 @@
                 <active>0</active>
                 <model>payanyway/faktura</model>
                 <title>Faktura</title>
-				<unitid>609111</unitid>
-				<logotype>faktura.jpg</logotype>
+                <unitid>609111</unitid>
+                <logotype>faktura.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_faktura>
             <payanyway_psb>
@@ -334,15 +366,15 @@
                 <active>0</active>
                 <model>payanyway/psb</model>
                 <title>Internet-bank "Promsvyazbank"</title>
-				<unitid>661709</unitid>
-				<logotype>psb.jpg</logotype>
+                <unitid>661709</unitid>
+                <logotype>psb.jpg</logotype>
                 <allowspecific>0</allowspecific>
             </payanyway_psb>
         </payment>
         <payanyway>
             <settings>
                 <payment_action>www.payanyway.ru</payment_action>
-				<mnt_test_mode>0</mnt_test_mode>
+                <mnt_test_mode>0</mnt_test_mode>
             </settings>
         </payanyway>
     </default>

@@ -25,7 +25,7 @@ class Paw_Payanyway_ProcessingController extends Mage_Core_Controller_Front_Acti
             if (!$order->getId()) {
                 Mage::throwException('No order for processing found');
             }
-            $order->setState(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT, Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
+            $order->setState(Paw_Payanyway_Model_Abstract::STATE_PAYANYWAY_PENDING, Paw_Payanyway_Model_Abstract::STATE_PAYANYWAY_PENDING,
                 Mage::helper('payanyway')->__('The customer was redirected to Payanyway.')
             );
             $order->save();
@@ -123,15 +123,14 @@ class Paw_Payanyway_ProcessingController extends Mage_Core_Controller_Front_Acti
 		}
 	}
 
-    /**
-     * Set redirect into responce. This has to be encapsulated in an JavaScript
-     * call to jump out of the iframe.
-     *
-     * @param string $path
-     * @param array $arguments
-     *
-     * @return Paw_Payanyway_ProcessingController
-     */
+	/**
+	 * Set redirect into responce. This has to be encapsulated in an JavaScript
+	 * call to jump out of the iframe.
+	 *
+	 * @param string $path
+	 * @param array $arguments
+	 * @return $this|\Mage_Core_Controller_Varien_Action
+	 */
     protected function _redirect($path, $arguments=array())
     {
         $this->getResponse()->setBody(

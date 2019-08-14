@@ -6,11 +6,6 @@
  */
 class Paw_Payanyway_Model_Event
 {
-    const PAYANYWAY_STATUS_FAIL = -2;
-    const PAYANYWAY_STATUS_CANCEL = -1;
-    const PAYANYWAY_STATUS_PENDING = 0;
-    const PAYANYWAY_STATUS_SUCCESS = 2;
-
     /*
      * @param Mage_Sales_Model_Order
      */
@@ -21,7 +16,7 @@ class Paw_Payanyway_Model_Event
      * @var array
      */
     protected $_eventData = array();
-
+	
     /**
      * Event response code
      * @var int
@@ -116,32 +111,6 @@ class Paw_Payanyway_Model_Event
     }
 
     /**
-     * Processes payment confirmation, creates invoice if necessary, updates order status,
-     * sends order confirmation to customer
-     * @param string $msg Order history message
-     */
-    protected function _processSale($status, $msg)
-    {
-        switch ($status) {
-            case self::PAYANYWAY_STATUS_SUCCESS:
-                $this->_createInvoice();
-                $this->_order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true, $msg);
-                // save transaction ID
-                $this->_order->getPayment()->setLastTransId($this->getEventData('MNT_TRANSACTION_ID'));
-                // send new order email
-                $this->_order->sendNewOrderEmail();
-                $this->_order->setEmailSent(true);
-                break;
-            case self::PAYANYWAY_STATUS_PENDING:
-                $this->_order->setState(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT, true, $msg);
-                // save transaction ID
-                $this->_order->getPayment()->setLastTransId($this->getEventData('MNT_TRANSACTION_ID'));
-                break;
-        }
-        $this->_order->save();
-    }
-
-    /**
      * Builds invoice for order
      */
     protected function _createInvoice()
@@ -199,7 +168,15 @@ class Paw_Payanyway_Model_Event
 					$amount = (float) $params['MNT_AMOUNT'];
 					if ( !isset($params['MNT_COMMAND']) && ($this->_order->getGrandTotal() == $amount) )
 					{
-						$this->_processSale(self::PAYANYWAY_STATUS_SUCCESS, Mage::helper('payanyway')->__('Payment has been completed.'));
+						$this->_createInvoice();
+						$this->_order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true, Mage::helper('payanyway')->__('Payment has been completed.'));
+						// save transaction ID
+						$this->_order->getPayment()->setLastTransId($this->getEventData('MNT_TRANSACTION_ID'));
+						// send new order email
+						$this->_order->sendNewOrderEmail();
+						$this->_order->setEmailSent(true);
+						$this->_order->save();
+
 						$this->_responseCode = 200;
 					}
 					else
@@ -207,7 +184,7 @@ class Paw_Payanyway_Model_Event
 						$status = $this->_order->getStatus();
 						switch($params['MNT_COMMAND']) {
 							case "CHECK":
-								if ($status == Mage_Sales_Model_Order::STATE_PROCESSING || $status == Mage_Sales_Model_Order::STATE_PENDING_PAYMENT)
+								if ($status == Mage_Sales_Model_Order::STATE_PROCESSING || $status == Paw_Payanyway_Model_Abstract::STATE_PAYANYWAY_PENDING)
 									$this->_responseCode = 402;
 								break;
 							case "CANCELLED_CREDIT":

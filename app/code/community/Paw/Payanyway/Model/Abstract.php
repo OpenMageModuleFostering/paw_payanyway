@@ -26,6 +26,8 @@ abstract class Paw_Payanyway_Model_Abstract extends Mage_Payment_Model_Method_Ab
     const XML_PATH_PAYANYWAYLOGIN       = 'payanyway/settings/payanyway_login';
     const XML_PATH_PAYANYWAYPASSWORD    = 'payanyway/settings/payanyway_password';
 
+	const STATE_PAYANYWAY_PENDING       = 'pending_payanyway';
+
     /**
      * Get order model
      *
@@ -49,7 +51,7 @@ abstract class Paw_Payanyway_Model_Abstract extends Mage_Payment_Model_Method_Ab
     }
 
     /**
-     * Capture payment through Moneybookers api
+     * Capture payment through PayAnyWay api
      *
      * @param Varien_Object $payment
      * @param decimal $amount
@@ -175,11 +177,14 @@ abstract class Paw_Payanyway_Model_Abstract extends Mage_Payment_Model_Method_Ab
         return true;
     }
 
-    /**
-     * Instantiate state and set it to state onject
-     * //@param
-     * //@param
-     */
+	/**
+	 * Instantiate state and set it to state object
+	 * //
+	 *
+	 * @param string $paymentAction
+	 * @param object $stateObject
+	 * @return \Mage_Payment_Model_Abstract|void
+	 */
     public function initialize($paymentAction, $stateObject)
     {
         $state = Mage_Sales_Model_Order::STATE_PENDING_PAYMENT;
