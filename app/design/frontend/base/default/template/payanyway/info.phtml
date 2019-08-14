@@ -1,0 +1,11 @@
+<?php echo $this->htmlEscape($this->getMethod()->getTitle()); ?><br />
+<?php if ($_img = $this->getPaymentImageSrc($this->getMethodCode())): ?>
+	<div style="padding:10px 15px 15px;">
+		<img src="<?php echo $_img ?>" alt="" /><br />
+	</div>
+<?php endif; ?>
+<?php if ($this->getInfo()->getLastTransId() == ''): ?>
+    <em><?php echo Mage::helper('payanyway')->__('You will be redirected to the payment system page when you place an order.') ?></em>
+<?php else: ?>
+    <?php echo Mage::helper('payanyway')->__('Payanyway Transaction ID: %s', $this->htmlEscape($this->getInfo()->getLastTransId())) ?><br />
+<?php endif; ?>

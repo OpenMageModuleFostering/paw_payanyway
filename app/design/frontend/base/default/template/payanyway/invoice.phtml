@@ -1,0 +1,50 @@
+<?php $invoice = $this->getInvoice(); ?>
+<div class="page-head">
+	<?php if ($invoice['status'] === 'CREATED'): ?>
+		<h3><?php echo Mage::helper('payanyway')->__('Invoice was created') ?></h3>
+		<?php if ($invoice['system'] === 'payanyway_banktransfer'): ?>
+			<?php echo Mage::helper('payanyway')->__("Transaction is registered for processing. To complete your payment please <a onclick=\"window.open('http://%s/wiretransferreceipt.htm?transactionId=%s&paymentSystem.unitId=%s','newwindow','1,0,0,0,0,resizable=1,scrollbars=1,width=730,height=670');return false;\" href=\"#\">print receipt</a> and make payment in bank office.", $this->getPaymentAction(), $invoice['transaction'], $invoice['unitid']) ?>
+		<?php elseif ($invoice['system'] == 'payanyway_post'): ?>
+			<?php echo Mage::helper('payanyway')->__('Transaction is registered for processing. To complete your payment please <a target="_blank" href="https://%s/mailofrussiablank.htm?operationId=%s">print post ticket</a> and proceed with payment in any <a target="_blank" href="http://www.russianpost.ru">Russian Post</a> post office.To view post ticket in PDF format you should have a program <a target="_blank" href="http://get.adobe.com/reader/">Adobe Acrobat Reader</a> installed.', $this->getPaymentAction(), $invoice['transaction']) ?>
+		<?php else:?>
+			<?php if ($invoice['system'] == 'payanyway_ciberpay'):?>
+				<h4><?php echo Mage::helper('payanyway')->__('Contract number for CiberPay is:') ?>&nbsp;<?php echo $invoice['transaction'] ?></h4>
+				<p><?php echo Mage::helper('payanyway')->__('Transaction is registered. Please proceed payment with CiberPay system using following <b>MONETA.RU</b> account number:') ?></p>
+			<?php elseif ($invoice['system'] == 'payanyway_comepay'):?>
+				<h4><?php echo Mage::helper('payanyway')->__('Contract number for ComePay is:') ?>&nbsp;<?php echo $invoice['transaction'] ?></h4>
+				<p><?php echo Mage::helper('payanyway')->__('Transaction is registered. Please proceed payment with ComePay cash payment terminals using following <b>PayAnyWay</b> account number:') ?></p>
+			<?php elseif ($invoice['system'] == 'payanyway_contact'):?>
+				<h4><?php echo Mage::helper('payanyway')->__('Contract number for Contact is:') ?>&nbsp;<?php echo $invoice['transaction'] ?></h4>
+				<p><?php echo Mage::helper('payanyway')->__('Transaction is registered. Please proceed payment with Contact payment system using following <b>MONETA.RU</b> account number:') ?></p>
+			<?php elseif ($invoice['system'] == 'payanyway_elecsnet'):?>
+				<h4><?php echo Mage::helper('payanyway')->__('Contract number for Elecsnet is:') ?>&nbsp;<?php echo $invoice['transaction'] ?></h4>
+				<p><?php echo Mage::helper('payanyway')->__('Transaction is registered. Please proceed payment with Elecsnet cash payment terminals using following <b>PayAnyWay</b> account number:') ?></p>
+			<?php elseif ($invoice['system'] == 'payanyway_euroset'):?>
+				<h4><?php echo Mage::helper('payanyway')->__('Contract number for Euroset is:') ?>&nbsp;<?php echo $invoice['transaction'] ?></h4>
+				<p><?php echo Mage::helper('payanyway')->__('Transaction is registered. Please proceed payment with Euroset using following <b>PayAnyWay</b> account number:') ?></p>
+			<?php elseif ($invoice['system'] == 'payanyway_gorod'):?>
+				<h4><?php echo Mage::helper('payanyway')->__('Contract number for Federal system GOROD is:') ?>&nbsp;<?php echo $invoice['transaction'] ?></h4>
+				<p><?php echo Mage::helper('payanyway')->__('Transaction is registered. Please proceed payment with Federal system GOROD using following <b>PayAnyWay</b> account number:') ?></p>
+			<?php elseif ($invoice['system'] == 'payanyway_forward'):?>
+				<h4><?php echo Mage::helper('payanyway')->__('Contract number for Forward Mobile is:') ?>&nbsp;<?php echo $invoice['transaction'] ?></h4>
+				<p><?php echo Mage::helper('payanyway')->__('Transaction is registered. Please proceed payment with Forward Mobile system using following <b>MONETA.RU</b> account number:') ?></p>
+			<?php elseif ($invoice['system'] == 'payanyway_mcb'):?>
+				<h4><?php echo Mage::helper('payanyway')->__('Contract number for MosCreditBank is:') ?>&nbsp;<?php echo $invoice['transaction'] ?></h4>
+				<p><?php echo Mage::helper('payanyway')->__('Transaction is registered. Please proceed payment with MosCreditBank cash payment terminals using following <b>MONETA.RU</b> account number:') ?></p>
+			<?php elseif ($invoice['system'] == 'payanyway_novoplat'):?>
+				<h4><?php echo Mage::helper('payanyway')->__('Contract number for NovoPlat is:') ?>&nbsp;<?php echo $invoice['transaction'] ?></h4>
+				<p><?php echo Mage::helper('payanyway')->__('Transaction is registered. Please proceed payment with NovoPlat system using following <b>PayAnyWay</b> account number:') ?></p>
+			<?php elseif ($invoice['system'] == 'payanyway_platika'):?>
+				<h4><?php echo Mage::helper('payanyway')->__('Contract number for PLATiKA is:') ?>&nbsp;<?php echo $invoice['transaction'] ?></h4>
+				<p><?php echo Mage::helper('payanyway')->__('Transaction is registered. Please proceed payment with PLATiKA system using following <b>MONETA.RU</b> account number:') ?></p>
+			<?php endif; ?>
+				
+			<p><?php echo $invoice['transaction'] ?></p>
+			<p><?php echo Mage::helper('payanyway')->__('Total amount:') ?>&nbsp;<?php echo $invoice['amount'] ?></p>
+		<?php endif; ?>
+	<?php else: ?>
+		<h3><?php echo Mage::helper('payanyway')->__('Error occured during creating invoice') ?></h3>
+		<p><?php echo $invoice['error_message']; ?></p>
+	<?php endif; ?>
+    
+</div>

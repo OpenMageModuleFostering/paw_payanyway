@@ -1,0 +1,4 @@
+<?php echo $this->getMethod()->getTitle() ?>
+    {{pdf_row_separator}}
+<?php echo Mage::helper('payanyway')->__('Payanyway Transaction ID: %s', $this->htmlEscape($this->getInfo()->getLastTransId())) ?>
+    {{pdf_row_separator}}

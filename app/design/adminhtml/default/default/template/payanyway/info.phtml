@@ -1,0 +1,6 @@
+<?php echo $this->htmlEscape($this->getMethod()->getTitle()) ?><br />
+<?php if ($this->getInfo()->getLastTransId() == ''): ?>
+    <?php echo Mage::helper('payanyway')->__('Payment has not been processed yet.') ?><br />
+<?php else: ?>
+    <?php echo Mage::helper('payanyway')->__('Payanyway Transaction ID: %s', $this->htmlEscape($this->getInfo()->getLastTransId())) ?><br />
+<?php endif; ?>

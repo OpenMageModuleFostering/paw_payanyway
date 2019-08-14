@@ -1,0 +1,128 @@
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/validation.js') ?>"></script>
+<?php $_code = $this->getMethodCode(); ?>
+<ul class="form-list" id="payment_form_<?php echo $_code ?>" style="display:none">
+    <li>
+        <?php echo Mage::helper('payanyway')->__('You will be redirected to the payment system page when you place an order.') ?>
+    </li>
+	<?php 
+	switch ($_code) 
+	{
+		case 'payanyway_euroset':
+	?>
+		<li>
+			<label class="required" for="rapidaPhone"><em>*</em><?php echo Mage::helper('payanyway')->__('Phone number') ?></label>
+			<div class="input-box">
+				<input type="text" value="" class="input-text required-entry validate-rapidaphone" title="Phone number" name="payment[additional_information][additionalParameters.rapidaPhone]" id="rapidaPhone" autocomplete="off">
+			</div>
+		</li>
+		<li class="wide">
+			<div class="input-box">
+				<em><?php echo Mage::helper('payanyway')->__('Phone number in international format. For example +71234567890') ?></em>
+			</div>
+		</li>
+	<?php
+			break;
+		case 'payanyway_moneymail':
+	?>
+		<li>
+			<label class="required" for="buyerEmail"><em>*</em><?php echo Mage::helper('payanyway')->__('E-mail in MoneyMail') ?></label>
+			<div class="input-box">
+				<input type="text" value="" class="input-text required-entry validate-email" title="E-mail in MoneyMail" name="payment[additional_information][additionalParameters.buyerEmail]" id="buyerEmail" autocomplete="off">
+			</div>
+		</li>
+	<?php
+			break;
+		case 'payanyway_post':
+	?>
+		<li>
+			<label class="required" for="senderIndex"><em>*</em><?php echo Mage::helper('payanyway')->__('Sender ZIP') ?></label>
+			<div class="input-box">
+				<input type="text" value="" class="input-text required-entry" title="Sender ZIP" name="payment[additional_information][additionalParameters.mailofrussiaSenderIndex]" id="senderIndex" autocomplete="off">
+			</div>
+		</li>
+		<li>
+			<label class="required" for="senderAddress"><em>*</em><?php echo Mage::helper('payanyway')->__('Sender address') ?></label>
+			<div class="input-box">
+				<input type="text" value="" class="input-text required-entry" title="Sender address" name="payment[additional_information][additionalParameters.mailofrussiaSenderAddress]" id="senderAddress" autocomplete="off">
+			</div>
+		</li>
+		<li>
+			<label class="required" for="senderName"><em>*</em><?php echo Mage::helper('payanyway')->__('Sender name') ?></label>
+			<div class="input-box">
+				<input type="text" value="" class="input-text required-entry" title="Sender name" name="payment[additional_information][additionalParameters.mailofrussiaSenderName]" id="senderName" autocomplete="off">
+			</div>
+		</li>
+	<?php
+			break;
+		case 'payanyway_webmoney':
+	?>
+		<li>
+			<label class="required" for="accountId"><em>*</em><?php echo Mage::helper('payanyway')->__('Payment system') ?></label>
+			<div class="input-box">
+				<select class="required-entry" id="accountId" name="payment[additional_information][paymentSystem.accountId]">
+					<option value="2">WMR</option>
+					<option value="3">WMZ</option>
+					<option value="4">WME</option>
+				</select>
+			</div>
+		</li>
+	<?php
+			break;
+		case 'payanyway_alfaclick':
+	?>
+		<li>
+			<label class="required" for="alfaIdClient"><em>*</em><?php echo Mage::helper('payanyway')->__('Internet-bank login') ?></label>
+			<div class="input-box">
+				<input type="text" value="" class="input-text required-entry" title="Internet-bank login" name="payment[additional_information][additionalParameters.alfaIdClient]" id="alfaIdClient" autocomplete="off">
+			</div>
+		</li>
+		<li>
+			<label class="required" for="alfaPaymentPurpose"><em>*</em><?php echo Mage::helper('payanyway')->__('Payment purpose') ?></label>
+			<div class="input-box">
+				<input type="text" value="" class="input-text required-entry" title="Payment purpose" name="payment[additional_information][additionalParameters.alfaPaymentPurpose]" id="alfaPaymentPurpose" autocomplete="off">
+			</div>
+		</li>
+	<?php
+			break;
+		case 'payanyway_dengimail':
+	?>
+		<li>
+			<label class="required" for="dmrBuyerEmail"><em>*</em><?php echo Mage::helper('payanyway')->__('E-mail in Money@Mail.Ru') ?></label>
+			<div class="input-box">
+				<input type="text" value="" class="input-text required-entry validate-email" title="E-mail in Money@Mail.Ru" name="payment[additional_information][additionalParameters.dmrBuyerEmail]" id="dmrBuyerEmail" autocomplete="off">
+			</div>
+		</li>
+	<?php
+			break;
+		case 'payanyway_qiwi':
+	?>
+		<li>
+			<label class="required" for="qiwiUser"><em>*</em><?php echo Mage::helper('payanyway')->__('Phone number') ?></label>
+			<div class="input-box">
+				<input type="text" value="" class="input-text required-entry validate-qiwiuser" title="Phone number" name="payment[additional_information][additionalParameters.qiwiUser]" id="qiwiUser" autocomplete="off">
+			</div>
+		</li>
+		<li class="wide">
+			<div class="input-box">
+				<em><?php echo Mage::helper('payanyway')->__('Phone number formatted as 10 digits, w/o +7 or 8') ?></em>
+			</div>
+		</li>
+		<li>
+			<label for="qiwiComment"><?php echo Mage::helper('payanyway')->__('Comment') ?></label>
+			<div class="input-box">
+				<input type="text" value="" class="input-text" title="Comment" name="payment[additional_information][additionalParameters.qiwiComment]" id="qiwiComment" autocomplete="off">
+			</div>
+		</li>
+	<?php
+			break;
+	}
+	?>
+    <?php if ($_img = $this->getPaymentImageSrc($_code)): ?>
+    <li>
+        <div style="padding:10px 15px 15px;">
+            <img src="<?php echo $_img ?>" alt="" /><br />
+        </div>
+    </li>
+    <?php endif; ?>
+</ul>
+
