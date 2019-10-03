@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/Paw_Payanyway",
+    "name": "OpenMageModuleFostering\/Paw_Payanyway",
     "type": "magento-module",
     "license": "GNU-General-Public-License-(-GPL-)",
     "homepage": "",
-    "description": "Официальный модуль оплаты PayAnyWay",
+    "description": "\u041e\u0444\u0438\u0446\u0438\u0430\u043b\u044c\u043d\u044b\u0439 \u043c\u043e\u0434\u0443\u043b\u044c \u043e\u043f\u043b\u0430\u0442\u044b PayAnyWay",
     "authors": [
-    {
-        "name": "PayAnyWay",
-        "email": "tech.support@moneta.ru"
-    }
-],
+        {
+            "name": "PayAnyWay",
+            "email": "tech.support@moneta.ru"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
